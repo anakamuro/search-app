@@ -1,41 +1,50 @@
 import './App.css';
 import React, {useState} from "react"
-import {data} from "./data.js"
+// import {data} from "./data.js"
 
 
 function App() {
   // const [data, setData] = useState([])
   const [search, setSearch] = useState('')
+  const [results, setResults] = useState([])
   console.log(search)
 
-  // useEffect(() => {
-  //   fetch('https://jsonplaceholder.typicode.com/users')
-  //      .then((res) => {
-  //       return res.json()
-  //      })
-  //      .then((json) => {
-  //       const results = json.filter((user)=> {
-  //         return user && user.name.toLowerCase().includes(value)
-  //       })
-  //       console.log(results)
-  //      })
-  // }, []);
+  const fetchData = (value) => {
+    fetch('https://jsonplaceholder.typicode.com/users')
+       .then((res) => {
+        return res.json()
+       })
+       .then((json) => {
+        const results = json.filter((user)=> {
+          return (value && user && user.name && user.name.toLowerCase().includes(value)
+          )
+        })
+       setResults(results)
+       })
+  }
 
-  console.log(data)
+  const handleChange = (value) => {
+    setSearch(value)
+    fetchData(value)
+  }
+
   return (
     <div className="App">
       <div>
         <h2>The personal information of the employee in the company</h2>
-        <input onChange={(e) => setSearch(e.target.value)}/>
+        <input 
+           placeholder="Name"
+           value={search}
+           onChange={(e) => handleChange(e.target.value)}/>
         <div className="multi">
-        {data
-           .filter((item) => {
-            if (search === ""){
-              return item
-            } else if (item.name.toLowerCase().includes(search.toLowerCase())) {
-              return item
-            }
-           })
+        {results
+          //  .filter((item) => {
+          //   if (search === ""){
+          //     return item
+          //   } else if (item.name.toLowerCase().includes(search.toLowerCase())) {
+          //     return item
+          //   }
+          //  })
         .map(item => (
         <div className="box" key={item.id}>
         <label>Name</label>
